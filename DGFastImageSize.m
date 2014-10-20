@@ -67,7 +67,7 @@
 #define READ_UINT32	(fread(buffer, 1, 4, file) == 4)
 #define LAST_UINT32	(uint32_t)(littleEndian ? (buffer[0] | buffer[1] << 8 | buffer[2] << 16 | buffer[3] << 24) : (buffer[3] | buffer[2] << 8 | buffer[1] << 16 | buffer[0] << 24))
 
-+ (CGSize)sizeOfImageForFileAtPath:(NSString *)filePath;
++ (CGSize)sizeOfImageFileAtPath:(NSString *)filePath;
 {
     BOOL success = NO;
     CGSize size = CGSizeZero;
@@ -79,14 +79,14 @@
         if (fread(buffer, 1, 2, file) == 2 &&
             memcmp(buffer, JPEG_HEADER, 2) == 0)
         { // JPEG
-            size = [self sizeOfImageForFilePath_JPEG:file];
+            size = [self sizeOfImageFilePath_JPEG:file];
             success = size.width > 0.f && size.height > 0.f;
         }
         
         if(!success)
         { // Apple icon file
             fseek( file, 0, SEEK_SET );
-            size = [self sizeOfImageForFilePath_ICNS: file];
+            size = [self sizeOfImageFilePath_ICNS: file];
             success = size.width > 0.f && size.height > 0.f;
         }
         
@@ -164,7 +164,7 @@
             // TIFF starts with just plain EXIF
             
             fseek(file, 0, SEEK_SET);
-            size = [self sizeOfImageForFilePath_EXIF:file];
+            size = [self sizeOfImageFilePath_EXIF:file];
             // success = size.width > 0.f && size.height > 0.f; // Not needed, analyzer...
         }
         
@@ -174,7 +174,7 @@
     return size;
 }
 
-+ (CGSize)sizeOfImageForFilePath_EXIF:(FILE *)file
++ (CGSize)sizeOfImageFilePath_EXIF:(FILE *)file
 {
     uint8_t buffer[4];
     
@@ -309,7 +309,7 @@
     return CGSizeZero;
 }
 
-+ (CGSize)sizeOfImageForFilePath_JPEG:(FILE *)file
++ (CGSize)sizeOfImageFilePath_JPEG:(FILE *)file
 {
     uint8_t buffer[4];
     
@@ -335,7 +335,7 @@
             if (fread(buffer, 1, 2, file) != 2 ||
                 buffer[0] != 0x00 || buffer[1] != 0x00) return CGSizeZero;
             
-            CGSize size = [self sizeOfImageForFilePath_EXIF:file];
+            CGSize size = [self sizeOfImageFilePath_EXIF:file];
             if (size.width >= 0 && size.height >= 0)
             {
                 return size;
@@ -421,7 +421,7 @@ static appleIconInfo appleIconInfoTable[] = {
 	{ "----", 0, 0 },		// end marker for search failure
 };
 
-+ (CGSize)sizeOfImageForFilePath_ICNS:(FILE *)file
++ (CGSize)sizeOfImageFilePath_ICNS:(FILE *)file
 {
     CGSize size = CGSizeZero;
     bool littleEndian = false;
@@ -477,7 +477,7 @@ static appleIconInfo appleIconInfoTable[] = {
            strcmp(iconType, "icnV") != 0 &&
            strcmp(iconType, "TOC ") != 0)
         {
-            NSLog(@"sizeOfImageForFilePath_ICNS failed: OSType '%s' not found in the table", iconType);
+            NSLog(@"sizeOfImageFilePath_ICNS failed: OSType '%s' not found in the table", iconType);
         }
         
         filepos += dataLength;

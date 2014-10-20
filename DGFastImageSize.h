@@ -36,6 +36,6 @@
 
 @interface DGFastImageSize : NSObject
 
-+ (CGSize)sizeOfImageForFileAtPath:(NSString *)filePath;
++ (CGSize)sizeOfImageFileAtPath:(NSString *)filePath;
 
 @end

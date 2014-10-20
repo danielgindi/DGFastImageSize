@@ -39,7 +39,7 @@
 
 - (CGSize)sizeOfImageForFilePath
 {
-    return [DGFastImageSize sizeOfImageForFileAtPath:self];
+    return [DGFastImageSize sizeOfImageFileAtPath:self];
 }
 
 @end
